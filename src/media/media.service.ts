@@ -9,7 +9,9 @@ export class MediaService {
   constructor(private readonly prisma: PrismaService) {}
 
   async createMedia(data: Media): Promise<Media> {
-    const createdMedia = await this.prisma.media.create({ data });
+    const createdMedia = await this.prisma.media.create({
+      data,
+    });
 
     return createdMedia;
   }

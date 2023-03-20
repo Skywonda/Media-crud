@@ -17,21 +17,21 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { v4 as uuidv4 } from 'uuid';
 
-import path from 'path';
+import * as path from 'path';
 import { CloudinaryService } from './cloudinary/cloudinary.service';
 
-// export const storage = {
-//   storage: diskStorage({
-//     destination: './uploads/profileimages',
-//     filename: (req, file, cb) => {
-//       const filename: string =
-//         path.parse(file.originalname).name.replace(/\s/g, '') + uuidv4();
-//       const extension: string = path.parse(file.originalname).ext;
+export const storage = {
+  storage: diskStorage({
+    filename: (req, file, cb) => {
+      const filename: string =
+        path.parse(file.originalname).name.replace(/\s/g, '') + uuidv4();
+      const extension: string = path.parse(file.originalname).ext;
+      console.log(filename);
 
-//       cb(null, `${filename}${extension}`);
-//     },
-//   }),
-// };
+      cb(null, `${filename}${extension}`);
+    },
+  }),
+};
 
 @Controller('media')
 export class MediaController {
@@ -46,8 +46,12 @@ export class MediaController {
     @Body() createMediaDto: Media,
     @UploadedFile() file: Express.Multer.File,
   ) {
+    let filename: string =
+      path.parse(file.originalname).name.replace(/\s/g, '') + uuidv4();
+    const extension: string = path.parse(file.originalname).ext;
+    filename += extension;
+    createMediaDto.originalname = filename;
     const upload = await this.cloudinary.uploadFile(file);
-    console.log(upload);
     if (!upload) {
       return {
         status: 'error',
@@ -57,6 +61,12 @@ export class MediaController {
     createMediaDto.url = upload.secure_url;
     createMediaDto.status = 'active';
     const media = await this.mediaService.createMedia(createMediaDto);
+    if (!media) {
+      return {
+        status: 'error',
+        message: 'An error occured while uploading image',
+      };
+    }
     return {
       status: 'success',
       message: 'Media created successfully!',
@@ -82,7 +92,7 @@ export class MediaController {
     };
   }
 
-  @Get()
+  @Get('search')
   async searchMedia(@Query() query) {
     const { search } = query;
     const media = await this.mediaService.searchMedia(search);
@@ -94,8 +104,13 @@ export class MediaController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.mediaService.getMediaById(id);
+  async findOne(@Param('id') id: string) {
+    const media = await this.mediaService.getMediaById(id);
+    if (media) throw new Error('something went wrong');
+    return {
+      status: 'success',
+      data: media,
+    };
   }
 
   @Patch(':id')

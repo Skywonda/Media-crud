@@ -4,6 +4,7 @@ export class Media implements Prisma.MediaUncheckedCreateInput {
   id?: string;
   type: string;
   name: string;
+  originalname: string;
   description: string;
   url: string;
   status: string;

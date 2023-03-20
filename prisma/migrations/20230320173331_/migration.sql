@@ -2,6 +2,7 @@
 CREATE TABLE "media" (
     "id" UUID NOT NULL,
     "name" TEXT NOT NULL,
+    "originalName" TEXT NOT NULL,
     "type" TEXT NOT NULL,
     "description" TEXT NOT NULL,
     "url" TEXT NOT NULL,
