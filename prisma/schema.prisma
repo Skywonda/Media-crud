@@ -17,10 +17,15 @@ model Media {
   type         String
   description  String
   url          String
-  status       String
+  status       Status    @default(active)
   createdAt    DateTime  @default(now()) @db.Timestamptz(6)
   updatedAt    DateTime  @updatedAt @db.Timestamptz(6)
   deletedAt    DateTime?
 
   @@map("media")
+}
+
+enum Status {
+  active
+  inactive
 }

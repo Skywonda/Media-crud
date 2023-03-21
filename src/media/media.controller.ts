@@ -19,6 +19,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 import * as path from 'path';
 import { CloudinaryService } from './cloudinary/cloudinary.service';
+import { Status } from '@prisma/client';
 
 export const storage = {
   storage: diskStorage({
@@ -59,7 +60,7 @@ export class MediaController {
       };
     }
     createMediaDto.url = upload.secure_url;
-    createMediaDto.status = 'active';
+    console.log(createMediaDto);
     const media = await this.mediaService.createMedia(createMediaDto);
     if (!media) {
       return {
@@ -114,7 +115,8 @@ export class MediaController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateMediaDto: string) {
+  update(@Param('id') id: string, @Body('status') updateMediaDto: Status) {
+    console.log(updateMediaDto);
     return this.mediaService.updateMediaStatus(id, updateMediaDto);
   }
 

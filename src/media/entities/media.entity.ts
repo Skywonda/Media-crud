@@ -1,4 +1,4 @@
-import { Prisma } from '@prisma/client';
+import { Prisma, Status } from '@prisma/client';
 
 export class Media implements Prisma.MediaUncheckedCreateInput {
   id?: string;
@@ -7,7 +7,7 @@ export class Media implements Prisma.MediaUncheckedCreateInput {
   originalname: string;
   description: string;
   url: string;
-  status: string;
+  status?: Status;
   createdAt?: Date;
   updatedAt?: Date;
   deletedAt?: Date;

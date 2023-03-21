@@ -1,6 +1,7 @@
 // media.service.ts
 
 import { Injectable } from '@nestjs/common';
+import { Status } from '@prisma/client';
 import { PrismaService } from '../prisma.service';
 import { Media } from './entities/media.entity';
 
@@ -49,7 +50,7 @@ export class MediaService {
     return media;
   }
 
-  async updateMediaStatus(id: string, status: string): Promise<Media> {
+  async updateMediaStatus(id: string, status: Status): Promise<Media> {
     const updatedMedia = await this.prisma.media.update({
       where: { id },
       data: { status },
