@@ -9,6 +9,7 @@ import {
   Query,
   UseInterceptors,
   UploadedFile,
+  Put,
 } from '@nestjs/common';
 import { MediaService } from './media.service';
 import { Media } from './entities/media.entity';
@@ -107,7 +108,7 @@ export class MediaController {
   @Get(':id')
   async findOne(@Param('id') id: string) {
     const media = await this.mediaService.getMediaById(id);
-    if (media) throw new Error('something went wrong');
+    if (!media) throw new Error('Not Found');
     return {
       status: 'success',
       data: media,
@@ -115,9 +116,9 @@ export class MediaController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body('status') updateMediaDto: Status) {
-    console.log(updateMediaDto);
-    return this.mediaService.updateMediaStatus(id, updateMediaDto);
+  async update(@Body('status') status: Status, @Param('id') id: string) {
+    console.log(status);
+    return await this.mediaService.updateMediaStatus(id, status);
   }
 
   @Delete(':id')
